@@ -1,20 +1,240 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    /* FONT */
+    --font-primary: "Poppins", sans-serif;
+
+    /* Primary Color — #10B981 */
+    --color-primary-50: #F3FCF9;
+    --color-primary-100: #E2F7F0;
+    --color-primary-200: #BCEBDC;
+    --color-primary-300: #91DFC5;
+    --color-primary-400: #58CEA7;
+    --color-primary-500: #10B981; /* base */
+    --color-primary-600: #0E9F6F;
+    --color-primary-700: #0C855D;
+    --color-primary-800: #096B4B;
+    --color-primary-900: #075139;
+
+    --color-primary: var(--color-primary-500);
+    --color-primary-light: var(--color-primary-300);
+    --color-primary-dark: var(--color-primary-700);
+
+     
+    /* Secondary Color — #14B8A6 */
+    --color-secondary-50: #F3FBFB;
+    --color-secondary-100: #E3F6F4;
+    --color-secondary-200: #BDEBE6;
+    --color-secondary-300: #93DED6;
+    --color-secondary-400: #5ACDC1;
+    --color-secondary-500: #14B8A6; /* base */
+    --color-secondary-600: #119E8F;
+    --color-secondary-700: #0E8478;
+    --color-secondary-800: #0C6B60;
+    --color-secondary-900: #095149;
+
+    --color-secondary: var(--color-secondary-500);
+    --color-secondary-light: var(--color-secondary-300);
+    --color-secondary-dark: var(--color-secondary-700);
+
+    /* Tertiary Color — #FC7C78 */
+    --color-tertiary-50: #FFF8F8;
+    --color-tertiary-100: #FFEFEF;
+    --color-tertiary-200: #FEDAD9;
+    --color-tertiary-300: #FEC3C1;
+    --color-tertiary-400: #FDA3A0;
+    --color-tertiary-500: #FC7C78; /* base */
+    --color-tertiary-600: #D96B67;
+    --color-tertiary-700: #B55956;
+    --color-tertiary-800: #924846;
+    --color-tertiary-900: #6F3735;
+
+    --color-tertiary: var(--color-tertiary-500);
+    --color-tertiary-light: var(--color-tertiary-300);
+    --color-tertiary-dark: var(--color-tertiary-700);
+
+    /* Neutral Color — #717973 */
+    --color-neutral-50: #F8F8F8;
+    --color-neutral-100: #EEEFEE;
+    --color-neutral-200: #D7D9D8;
+    --color-neutral-300: #BEC1BF;
+    --color-neutral-400: #9CA19D;
+    --color-neutral-500: #717973; /* base */
+    --color-neutral-600: #616863;
+    --color-neutral-700: #515753;
+    --color-neutral-800: #424643;
+    --color-neutral-900: #323533;
+
+    --color-neutral: var(--color-neutral-500);
+    --color-neutral-light: var(--color-neutral-300);
+    --color-neutral-dark: var(--color-neutral-700);
+    
+    /* Status Colors (success / warning / danger) */
+    --color-success: #45C266;
+    --color-warning: #FFCB45;
+    --color-danger: #EF5350;
+
+    /* Text Colors */
+    --color-text: #202124;
+    --color-text-secondary: #6B7280;
+
+    /* Background & Surface Colors */
+    --color-background: #111111;
+    --color-surface: #FFFFFF;
+
+    /* Border Color */
+    --color-border: #EBEDF0;
+
+    /* Radius */
+    --radius-xl: 30px;
+    --radius-lg: 22px;
+    --radius-md: 18px;
+    --radius-sm: 12px;
 }
 
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+ 
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    font-family: var(--font-primary);
+    background: var(--color-background);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+ 
+  body {
+    display: flex;
+    justify-content: center;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+    /* Font */
+    --font-primary: var(--font-primary);
+
+    /* Primary */
+    --color-primary-50: var(--color-primary-50);
+    --color-primary-100: var(--color-primary-100);
+    --color-primary-200: var(--color-primary-200);
+    --color-primary-300: var(--color-primary-300);
+    --color-primary-400: var(--color-primary-400);
+    --color-primary-500: var(--color-primary-500);
+    --color-primary-600: var(--color-primary-600);
+    --color-primary-700: var(--color-primary-700);
+    --color-primary-800: var(--color-primary-800);
+    --color-primary-900: var(--color-primary-900);
+    --color-primary: var(--color-primary);
+    --color-primary-light: var(--color-primary-light);
+    --color-primary-dark: var(--color-primary-dark);
+
+    /* Secondary */
+    --color-secondary-50: var(--color-secondary-50);
+    --color-secondary-100: var(--color-secondary-100);
+    --color-secondary-200: var(--color-secondary-200);
+    --color-secondary-300: var(--color-secondary-300);
+    --color-secondary-400: var(--color-secondary-400);
+    --color-secondary-500: var(--color-secondary-500);
+    --color-secondary-600: var(--color-secondary-600);
+    --color-secondary-700: var(--color-secondary-700);
+    --color-secondary-800: var(--color-secondary-800);
+    --color-secondary-900: var(--color-secondary-900);
+    --color-secondary: var(--color-secondary);
+    --color-secondary-light: var(--color-secondary-light);
+    --color-secondary-dark: var(--color-secondary-dark);
+
+    /* Tertiary */
+    --color-tertiary-50: var(--color-tertiary-50);
+    --color-tertiary-100: var(--color-tertiary-100);
+    --color-tertiary-200: var(--color-tertiary-200);
+    --color-tertiary-300: var(--color-tertiary-300);
+    --color-tertiary-400: var(--color-tertiary-400);
+    --color-tertiary-500: var(--color-tertiary-500);
+    --color-tertiary-600: var(--color-tertiary-600);
+    --color-tertiary-700: var(--color-tertiary-700);
+    --color-tertiary-800: var(--color-tertiary-800);
+    --color-tertiary-900: var(--color-tertiary-900);
+    --color-tertiary: var(--color-tertiary);
+    --color-tertiary-light: var(--color-tertiary-light);
+    --color-tertiary-dark: var(--color-tertiary-dark);
+
+    /* Neutral */
+    --color-neutral-50: var(--color-neutral-50);
+    --color-neutral-100: var(--color-neutral-100);
+    --color-neutral-200: var(--color-neutral-200);
+    --color-neutral-300: var(--color-neutral-300);
+    --color-neutral-400: var(--color-neutral-400);
+    --color-neutral-500: var(--color-neutral-500);
+    --color-neutral-600: var(--color-neutral-600);
+    --color-neutral-700: var(--color-neutral-700);
+    --color-neutral-800: var(--color-neutral-800);
+    --color-neutral-900: var(--color-neutral-900);
+    --color-neutral: var(--color-neutral);
+    --color-neutral-light: var(--color-neutral-light);
+    --color-neutral-dark: var(--color-neutral-dark);
+
+    /* Status */
+    --color-success: var(--color-success);
+    --color-warning: var(--color-warning);
+    --color-danger: var(--color-danger);
+
+    /* Surface / Background / Border */
+    --color-surface: var(--color-surface);
+    --color-background: var(--color-background);
+    --color-border: var(--color-border);
+
+    /* Text */
+    --color-text: var(--color-text);
+    --color-text-secondary: var(--color-text-secondary);
+}
+
+/* ==========================================================
+   Mobile Container
+   Semua halaman akan berada di dalam container ini.
+   Jika nanti ingin mengubah ukuran aplikasi, ubah max-width
+   di sini.
+   ========================================================== */
+
+.app-container {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    background: var(--color-surface);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d6d6d6;
+    border-radius: 999px;
+}
+
+/* Image */
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button {
+    font-family: inherit;
+}
+
+input {
+    font-family: inherit;
+}
+
+textarea {
+    font-family: inherit;
 }
