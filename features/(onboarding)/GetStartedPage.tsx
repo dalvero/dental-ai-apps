@@ -9,7 +9,7 @@ export default function GetStartedPage() {
     return (
         <main className="min-h-screen flex flex-col bg-gradient-to-b from-primary-50 via-secondary-50 to-primary-100 px-6">
         {/* Content */}
-            <div className="flex-1 flex flex-col items-center justify-center gap-8 py-8">
+            <div className="flex-1 flex flex-col items-center justify-center gap-8 py-3">
                 {/* Mascot Image */}
                 <div className="relative">
                     {/* Ambient glow behind the card */}
@@ -25,7 +25,7 @@ export default function GetStartedPage() {
                 </div>
 
                 {/* Headline & Deskripsi */}
-                <div className="flex flex-col items-center gap-3 text-center px-2">
+                <div className="flex flex-col items-center gap-3 -mt-3 text-center px-2">
                     <h1 className="text-2xl font-bold text-text leading-snug">
                         Better Dental Health
                         <br />

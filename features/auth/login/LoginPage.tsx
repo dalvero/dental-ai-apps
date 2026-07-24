@@ -25,7 +25,7 @@ export default function LoginPage() {
     try {
       const result = await login(email, password);
       toast.success(result.message);
-      router.push("/add-child");
+      router.push("/dashboard");
     } catch (error: unknown){
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(
@@ -128,6 +128,7 @@ export default function LoginPage() {
             Don&apos;t have an account?{" "}
             <button
               type="button"
+              onClick={() => router.push("/register")}
               className="font-semibold text-primary-600 hover:text-primary-700"
             >
               Sign Up

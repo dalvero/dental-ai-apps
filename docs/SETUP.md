@@ -22,6 +22,7 @@ Dokumentasi ini menjelaskan proses setup awal project, struktur folder, serta li
 | TypeScript | ✓ |
 | Tailwind CSS | 4.x |
 | App Router | ✓ |
+| Prisma | 7 |
 
 ---
 
@@ -58,13 +59,27 @@ dental-ai-apps/
 │
 ├── app/
 │   ├── (auth)/
+│   │    ├──forgot-password
+|   │    ├──login
+│   │    └──register
+|   ├── (main)/
+│   │    ├──dashboard
+│   │    ├──detection
+│   │    ├──education
+│   │    ├──history
+│   │    ├──profile
+|   │    └──layout.tsx
+|   ├── (onboarding)/
+│   │    ├──add-child
+|   │    └──get-started
 │   ├── admin/
-│   ├── dashboard/
-│   ├── detection/
-│   ├── education/
-│   ├── history/
-│   ├── profile/
 │   ├── api/
+│   │    ├──auth
+│   │    │  ├──login
+|   |    │  └──register
+│   │    └──children
+│   │       └──[id]
+│   ├── favicon.ico
 │   ├── globals.css
 │   ├── layout.tsx
 │   └── page.tsx
@@ -73,16 +88,24 @@ dental-ai-apps/
 │   ├── common/
 │   ├── layout/
 │   └── ui/
-│
+|
+├── docs/
+|
 ├── features/
+|   ├── (onboarding)/
 │   ├── auth/
+│   │    ├──forgot-password
+|   │    ├──login
+│   │    └──register
 │   ├── checklist/
 │   ├── dashboard/
+│   │    └──components
 │   ├── detection/
 │   ├── education/
 │   ├── history/
 │   ├── profile/
-│   └── streak/
+│   ├── streak/
+|   └── welcome/
 │
 ├── hooks/
 │
@@ -96,6 +119,8 @@ dental-ai-apps/
 │   └── illustrations/
 │
 ├── services/
+│   ├── auth/
+|   └── child/
 │
 ├── store/
 │
@@ -105,12 +130,11 @@ dental-ai-apps/
 │
 ├── utils/
 │
-├── docs/
-│
 ├── middleware.ts
 │
 ├── next.config.ts
 ├── package.json
+├── prisma.config.ts
 └── tsconfig.json
 ```
 

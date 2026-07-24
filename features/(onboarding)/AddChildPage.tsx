@@ -1,39 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, User, Calendar } from "lucide-react";
+import { ArrowRight, User, Calendar, Cake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TextField from "@/components/ui/textfield";
+import { toast } from "sonner";
+import { createChild } from "@/services/child/child.service";
+import { AxiosError } from "axios";
+import { ApiResponse } from "@/types";
+import { useRouter } from "next/navigation";
 
-const AVATAR_OPTIONS = [
-  { id: "smile", emoji: "😄", bg: "bg-primary-100" },
-  { id: "shy", emoji: "😊", bg: "bg-secondary-100" },
-  { id: "glasses", emoji: "🤓", bg: "bg-tertiary-100" },
-  { id: "cat", emoji: "😺", bg: "bg-neutral-100" },
-  { id: "cool", emoji: "😎", bg: "bg-primary-100" },
-  { id: "star", emoji: "🤩", bg: "bg-secondary-100" },
-  { id: "ninja", emoji: "🥷", bg: "bg-neutral-100" },
-  { id: "wink", emoji: "😉", bg: "bg-tertiary-100" },
-];
+const GENDER_OPTIONS = [
+  {
+    id: "MALE",
+    label: "Boy",
+    image: "/images/boy_gender.png",
+    margin: "-ml-2",
+  },
+  {
+    id: "FEMALE",
+    label: "Girl",
+    image: "/images/girl_gender.png",
+    margin: "mr-2",
+  },
+] as const;
+
+/**
+ * Hitung umur (dalam tahun) dari tanggal lahir sampai hari ini.
+ * Return string kosong kalau birthDate belum diisi/invalid.
+ */
+function calculateAge(birthDate: string): string {
+  if (!birthDate) return "";
+
+  const birth = new Date(birthDate);
+  if (isNaN(birth.getTime())) return "";
+
+  const today = new Date();
+  let years = today.getFullYear() - birth.getFullYear();
+  const months = today.getMonth() - birth.getMonth();
+
+  if (months < 0 || (months === 0 && today.getDate() < birth.getDate())) {
+    years--;
+  }
+
+  if (years < 0) return "";
+  if (years === 0) return "< 1 tahun";
+
+  return `${years} tahun`;
+}
 
 export default function AddChildPage() {
-  const [selectedAvatar, setSelectedAvatar] = useState<string>(
-    AVATAR_OPTIONS[0].id
+  const router = useRouter();
+  const [selectedGender, setSelectedGender] = useState<string>(
+    GENDER_OPTIONS[0].id
   );
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const [birthDate, setBirthDate] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const displayAge = useMemo(() => calculateAge(birthDate), [birthDate]);
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
-    // TODO: sambungkan ke logic simpan profil anak
-    console.log({ selectedAvatar, name, age });
+
+    try {
+      const result = await createChild({
+        gender: selectedGender as "MALE" | "FEMALE",
+        name,
+        birthDate,
+      });
+
+      toast.success(result.message);
+      router.push("/dashboard");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast.error(
+        axiosError.response?.data?.message ?? "Terjadi kesalahan."
+      );
+    }
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-gradient-to-b from-primary-50 via-secondary-50 to-primary-100 px-6 py-10">
-      <div className="w-full max-w-sm flex flex-col gap-6">
-        {/* Heading */}
+    <main className="min-h-screen flex flex-col items-center bg-gradient-to-b from-primary-50 via-secondary-50 to-primary-100 px-6 py-5">
+      <div className="w-full max-w-sm flex flex-col gap-3">
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-xl font-bold text-text">Add Your Child</h1>
           <p className="text-sm text-text-secondary max-w-[280px]">
@@ -42,31 +93,45 @@ export default function AddChildPage() {
           </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-surface rounded-3xl px-6 py-7 shadow-[0_20px_45px_-20px_rgba(16,185,129,0.35)] flex flex-col gap-6">
+        <div className="bg-surface rounded-3xl px-6 py-3 shadow-[0_20px_45px_-20px_rgba(16,185,129,0.35)] flex flex-col gap-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {/* Avatar Picker */}
+            {/* Gender Picker */}
             <div className="flex flex-col gap-2.5">
               <span className="text-sm font-medium text-text">
-                Choose an Avatar
+                Choose a Gender
               </span>
-              <div className="grid grid-cols-4 gap-3">
-                {AVATAR_OPTIONS.map((avatar) => {
-                  const isSelected = selectedAvatar === avatar.id;
+              <div className="grid grid-cols-2 gap-4">
+                {GENDER_OPTIONS.map((gender) => {
+                  const isSelected = selectedGender === gender.id;
                   return (
                     <button
-                      key={avatar.id}
+                      key={gender.id}
                       type="button"
-                      onClick={() => setSelectedAvatar(avatar.id)}
+                      onClick={() => setSelectedGender(gender.id)}
                       aria-pressed={isSelected}
-                      aria-label={`Pilih avatar ${avatar.id}`}
-                      className={`aspect-square rounded-full flex items-center justify-center text-xl transition ${avatar.bg} ${
+                      aria-label={`Pilih gender ${gender.label}`}
+                      className={`flex flex-col items-center gap-2 rounded-2xl transition ${
                         isSelected
-                          ? "ring-2 ring-primary-500 ring-offset-2 ring-offset-surface"
+                          ? "ring-2 ring-primary-500"
                           : "ring-1 ring-border"
                       }`}
                     >
-                      {avatar.emoji}
+                      <span className="relative w-full aspect-[4/4] rounded-xl overflow-hidden bg-white">
+                        <Image
+                          src={gender.image}
+                          alt={`Ilustrasi anak ${gender.label}`}
+                          fill
+                          sizes="160px"
+                          className={`object-contain ${gender.margin}`}
+                        />
+                      </span>
+                      <span
+                        className={`text-sm font-medium mb-2 ${
+                          isSelected ? "text-primary-600" : "text-text-secondary"
+                        }`}
+                      >
+                        {gender.label}
+                      </span>
                     </button>
                   );
                 })}
@@ -80,22 +145,36 @@ export default function AddChildPage() {
               placeholder="e.g. Levi"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              icon={<User size={18} />}
+              icon={<User size={15} />}
+              className="-mb-2"
             />
 
-            {/* Age */}
+            {/* Birth Date */}
+            <TextField
+              id="child-birthdate"
+              label="Birth Date"
+              type="date"
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+              icon={<Calendar size={15} />}
+              className="-mb-1"
+              max={new Date().toISOString().split("T")[0]}
+            />
+
+            {/* Age — auto-calculated, read-only */}
             <TextField
               id="child-age"
               label="Age"
-              type="number"
-              inputMode="numeric"
-              placeholder="e.g. 6"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              icon={<Calendar size={18} />}
+              type="text"
+              value={displayAge}
+              onChange={() => {}}
+              placeholder="Terisi otomatis dari Birth Date"
+              icon={<Cake size={15} />}
+              className="-mb-1"
+              disabled
+              readOnly
             />
 
-            {/* Submit */}
             <div className="flex flex-col items-center gap-2">
               <Button
                 type="submit"
@@ -112,19 +191,6 @@ export default function AddChildPage() {
               </p>
             </div>
           </form>
-        </div>
-
-        {/* Decorative Illustration */}
-        <div className="flex justify-center pt-2">
-          <div className="relative w-28 h-28 rounded-full bg-primary-100/70 flex items-center justify-center overflow-hidden">
-            <Image
-              src="/illustrations/dental_ai_mascot_kids.png"
-              alt="Ilustrasi anak-anak menjaga kesehatan gigi"
-              width={96}
-              height={96}
-              className="w-24 h-24 object-contain"
-            />
-          </div>
         </div>
       </div>
     </main>
