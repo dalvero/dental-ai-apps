@@ -211,6 +211,14 @@
     overflow: hidden;
 }
 
+/* Full Width Desktop Override untuk Dashboard Admin (Light Theme) */
+body:has(.admin-layout) .app-container,
+.app-container:has(.admin-layout) {
+    max-width: 100% !important;
+    background: #F8FAFC !important;
+    overflow: visible !important;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;

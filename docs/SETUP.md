@@ -6,49 +6,26 @@
 
 # Setup Documentation
 
-**Tanggal Setup :** 16 Juli 2026
+**Tanggal Setup :** 16 Juli 2026  
+**Terakhir Diperbarui :** 29 Juli 2026  
 
-Dokumentasi ini menjelaskan proses setup awal project, struktur folder, serta library yang digunakan selama proses pengembangan.
+Dokumentasi ini menjelaskan proses setup awal project, struktur folder terbaru, serta library yang digunakan selama proses pengembangan.
 
 ---
 
 # Technology Stack
 
-| Teknologi | Versi |
+| Teknologi | Versi / Detail |
 |------------|--------|
 | Node.js | 22 LTS |
-| Next.js | 15.3.5 |
+| Next.js | 15.3.5 (App Router & Route Handler) |
 | React | 19 |
-| TypeScript | ✓ |
+| TypeScript | 5.x |
 | Tailwind CSS | 4.x |
-| App Router | ✓ |
-| Prisma | 7 |
-
----
-
-# Membuat Project
-
-```bash
-npx create-next-app@15.3.5 dental-ai-apps
-```
-
-## Konfigurasi Instalasi
-
-```text
-✔ Would you like to use TypeScript? → Yes
-
-✔ Would you like to use ESLint? → Yes
-
-✔ Would you like to use Tailwind CSS? → Yes
-
-✔ Would you like your code inside a src/ directory? → No
-
-✔ Would you like to use App Router? → Yes
-
-✔ Would you like to use Turbopack for next dev? → Yes
-
-✔ Would you like to customize the import alias (@/* by default)? → No
-```
+| Prisma ORM | 7.x (`@prisma/adapter-pg`) |
+| Database | PostgreSQL (Hosted di Supabase via Session Pooler) |
+| Authentication | JWT (`jose`), `bcryptjs`, HttpOnly Cookies |
+| State Management | Zustand (`store/useUserStore.ts`) |
 
 ---
 
@@ -59,26 +36,32 @@ dental-ai-apps/
 │
 ├── app/
 │   ├── (auth)/
-│   │    ├──forgot-password
-|   │    ├──login
-│   │    └──register
-|   ├── (main)/
-│   │    ├──dashboard
-│   │    ├──detection
-│   │    ├──education
-│   │    ├──history
-│   │    ├──profile
-|   │    └──layout.tsx
-|   ├── (onboarding)/
-│   │    ├──add-child
-|   │    └──get-started
+│   │    ├── forgot-password
+│   │    ├── login
+│   │    └── register
+│   ├── (main)/
+│   │    ├── dashboard
+│   │    ├── detection
+│   │    ├── education
+│   │    ├── history
+│   │    ├── profile
+│   │    └── layout.tsx
+│   ├── (onboarding)/
+│   │    ├── add-child
+│   │    └── get-started
 │   ├── admin/
+│   │    ├── login/
+│   │    │    └── page.tsx
+│   │    ├── layout.tsx
+│   │    └── page.tsx
 │   ├── api/
-│   │    ├──auth
-│   │    │  ├──login
-|   |    │  └──register
-│   │    └──children
-│   │       └──[id]
+│   │    ├── auth/
+│   │    │    ├── login/route.ts
+│   │    │    ├── register/route.ts
+│   │    │    └── me/route.ts
+│   │    └── children/
+│   │         ├── [id]/route.ts
+│   │         └── route.ts
 │   ├── favicon.ico
 │   ├── globals.css
 │   ├── layout.tsx
@@ -87,86 +70,110 @@ dental-ai-apps/
 ├── components/
 │   ├── common/
 │   ├── layout/
+│   │    └── app-header.tsx
 │   └── ui/
-|
+│
 ├── docs/
-|
+│   ├── PRD.md
+│   ├── PROGRESS_LOG.md
+│   └── SETUP.md
+│
 ├── features/
-|   ├── (onboarding)/
+│   ├── (onboarding)/
+│   ├── admin/
+│   │    ├── components/
+│   │    │    ├── AdminHeader.tsx
+│   │    │    ├── AdminSidebar.tsx
+│   │    │    ├── AdminStatGrid.tsx
+│   │    │    ├── ChecklistVerificationCard.tsx
+│   │    │    ├── RecentDetectionsTable.tsx
+│   │    │    └── UserManagementTable.tsx
+│   │    ├── login/
+│   │    │    └── AdminLoginPage.tsx
+│   │    └── AdminDashboardPage.tsx
 │   ├── auth/
-│   │    ├──forgot-password
-|   │    ├──login
-│   │    └──register
 │   ├── checklist/
 │   ├── dashboard/
-│   │    └──components
+│   │    ├── components/
+│   │    │    ├── ArticleCard.tsx
+│   │    │    ├── ChildSelector.tsx
+│   │    │    ├── DentalVisitCard.tsx
+│   │    │    ├── FeatureGrid.tsx
+│   │    │    ├── HeroCard.tsx
+│   │    │    ├── ReminderCard.tsx
+│   │    │    └── WeeklyProgress.tsx
+│   │    └── DashboardPage.tsx
 │   ├── detection/
 │   ├── education/
 │   ├── history/
 │   ├── profile/
 │   ├── streak/
-|   └── welcome/
+│   └── welcome/
 │
 ├── hooks/
 │
 ├── lib/
+│   ├── auth.ts
+│   └── prisma.ts
 │
 ├── prisma/
+│   └── schema.prisma
 │
 ├── public/
 │   ├── icons/
 │   ├── images/
+│   │    ├── boy_gender.png
+│   │    └── girl_gender.png
 │   └── illustrations/
 │
 ├── services/
 │   ├── auth/
-|   └── child/
+│   │    ├── auth.service.ts
+│   │    ├── login.service.ts
+│   │    └── register.service.ts
+│   └── child/
+│        └── child.service.ts
 │
 ├── store/
+│   └── useUserStore.ts
 │
 ├── styles/
 │
 ├── types/
+│   ├── api.ts
+│   ├── child.ts
+│   ├── index.ts
+│   └── user.ts
 │
 ├── utils/
 │
 ├── middleware.ts
-│
 ├── next.config.ts
 ├── package.json
-├── prisma.config.ts
 └── tsconfig.json
 ```
 
 ---
 
-# Struktur Folder
+# Deskripsi Struktur Folder
 
 | Folder | Fungsi |
 |----------|---------|
 | **app/** | Routing utama aplikasi menggunakan App Router Next.js. |
-| **app/api/** | REST API menggunakan Route Handler Next.js. |
-| **components/** | Komponen UI yang dapat digunakan kembali. |
-| **features/** | Mengelompokkan kode berdasarkan fitur bisnis. |
-| **hooks/** | Menyimpan seluruh Custom React Hooks. |
-| **lib/** | Konfigurasi library, helper internal, dan konstanta aplikasi. |
-| **services/** | Layer komunikasi dengan REST API. |
-| **store/** | Global State Management menggunakan Zustand. |
-| **types/** | Seluruh interface dan type TypeScript. |
-| **utils/** | Helper Function. |
-| **styles/** | File CSS tambahan. |
-| **public/** | Asset statis (gambar, icon, ilustrasi, dll). |
-| **docs/** | Dokumentasi project. |
+| **app/admin/** | Routing khusus Panel Dashboard & Login Admin (Desktop Web Layout). |
+| **app/api/** | REST API menggunakan Route Handler Next.js (`/api/auth/login`, `/api/auth/me`, `/api/children`). |
+| **components/** | Komponen UI reusable (`components/ui`, `components/layout`). |
+| **features/** | Mengelompokkan kode berdasarkan fitur bisnis (`features/admin`, `features/dashboard`, `features/auth`). |
+| **features/admin/** | Modul komponen visual untuk Dashboard Admin (Sidebar, Header, Stat Grid, Tables). |
+| **hooks/** | Custom React Hooks. |
+| **lib/** | Helper internal (`auth.ts` JWT signer/verifier, `prisma.ts` instance). |
+| **services/** | Layer komunikasi dengan REST API menggunakan Axios. |
+| **store/** | Global State Management menggunakan Zustand (`store/useUserStore.ts`). |
+| **types/** | Interface dan type TypeScript (`user.ts`, `child.ts`, `api.ts`). |
+| **public/** | Asset statis (icon, ilustrasi, avatar gender `boy_gender.png` & `girl_gender.png`). |
+| **docs/** | Dokumentasi project (`PRD.md`, `PROGRESS_LOG.md`, `SETUP.md`). |
 | **prisma/** | Schema database menggunakan Prisma ORM. |
-| **middleware.ts** | Middleware untuk Authentication & Authorization. |
-
----
-
-# Install Supporting Libraries
-
-```bash
-npm install axios zustand react-hook-form zod @hookform/resolvers sonner lucide-react clsx tailwind-merge class-variance-authority
-```
+| **middleware.ts** | Middleware untuk Authentication, Authorization & Route Protection. |
 
 ---
 
@@ -174,68 +181,45 @@ npm install axios zustand react-hook-form zod @hookform/resolvers sonner lucide-
 
 | Library | Fungsi | Alasan Digunakan |
 |----------|---------|------------------|
-| **axios** | HTTP Client | Komunikasi antara Frontend dengan REST API. Mendukung interceptor sehingga cocok untuk autentikasi. |
-| **zustand** | State Management | Menyimpan state global seperti user login, tema aplikasi, dan status autentikasi. |
+| **axios** | HTTP Client | Komunikasi antara Frontend dengan REST API. |
+| **zustand** | State Management | Menyimpan state profil user login, daftar anak, dan anak aktif di `store/useUserStore.ts`. |
 | **react-hook-form** | Form Management | Mengelola form dengan performa tinggi dan re-render minimal. |
 | **zod** | Schema Validation | Memvalidasi data form maupun response API. |
 | **@hookform/resolvers** | React Hook Form Integration | Menghubungkan React Hook Form dengan Zod. |
-| **sonner** | Toast Notification | Menampilkan notifikasi sukses, gagal, maupun informasi. |
+| **sonner** | Toast Notification | Menampilkan notifikasi sukses/gagal di UI. |
 | **lucide-react** | Icon Library | Menyediakan icon SVG yang ringan dan mudah dikustomisasi. |
-| **clsx** | Conditional Class | Menggabungkan className berdasarkan kondisi tertentu. |
+| **clsx** | Conditional Class | Menggabungkan className berdasarkan kondisi. |
 | **tailwind-merge** | Tailwind Merge | Menghindari konflik antar class Tailwind. |
-| **class-variance-authority (CVA)** | Component Variant | Membuat variasi komponen UI tanpa mengulang class Tailwind. |
+| **class-variance-authority (CVA)** | Component Variant | Membuat variasi komponen UI. |
+| **jose** | JWT Management | Sign dan verify token JWT untuk session authentication. |
+| **bcryptjs** | Password Hashing | Enkripsi & verifikasi password di database. |
+| **@prisma/client** | ORM Client | Query data PostgreSQL Supabase. |
 
 ---
 
-# Contoh Penggunaan Library
+# Development Status
 
-| Library | Contoh Penggunaan |
-|----------|-------------------|
-| Axios | Login, mengambil riwayat deteksi, menyimpan checklist, memanggil AI API. |
-| Zustand | Menyimpan informasi user login, dark mode, dan global state lainnya. |
-| React Hook Form | Login Form, Register Form, Edit Profile. |
-| Zod | Validasi Email, Password, Nomor Telepon, dan input lainnya. |
-| Sonner | Menampilkan toast "Login Berhasil", "Prediksi Berhasil", maupun pesan error. |
-| Lucide React | Icon Home, History, Profile, Dashboard, Camera, Logout, dan lainnya. |
-| CVA | Button Primary, Secondary, Outline, Danger, Success, Badge, Card, dll. |
-
----
-
-# Library yang Akan Di-install Selanjutnya
-
-| Library | Digunakan Saat |
-|----------|----------------|
-| **Prisma** | Mulai membuat Backend dan Database. |
-| **next-pwa** | Setelah UI utama selesai dan siap dijadikan Progressive Web App. |
-| **bcrypt** | Implementasi Authentication. |
-| **jose** | Implementasi JWT Authentication. |
-| **pg** | Koneksi PostgreSQL. |
-| **dayjs** | Pengolahan tanggal, history, dan streak. |
-| **uploadthing** | Upload gambar ke server (jika diperlukan). |
-
----
-
-# Roadmap Development
-
-- ✅ Setup Project
-- ✅ Struktur Folder
-- ✅ Install Supporting Library
-- ⏳ UI Development
+- ✅ Setup Project & Struktur Folder
+- ✅ Install Supporting Libraries
+- ✅ Database (Prisma + PostgreSQL / Supabase)
+- ✅ Authentication (JWT + Session Cookie + Middleware Route Protection)
+- ✅ REST API (`/api/auth/login`, `/api/auth/register`, `/api/auth/me`, `/api/children`)
+- ✅ Integrasi Data Parent & Anak di Dashboard Parent (`useUserStore.ts` & `ChildSelector.tsx`)
+- ✅ Admin Panel UI & Admin Login Page (Desktop Web Layout, Light PWA Theme)
+- ⏳ Integrasi Backend Admin Dashboard ke DB
 - ⏳ Progressive Web App (PWA)
-- ⏳ Database (Prisma + PostgreSQL)
-- ⏳ Authentication
-- ⏳ REST API
 - ⏳ AI Integration
-- ⏳ Dashboard Admin
 - ⏳ Flutter WebView Integration
 - ⏳ Deployment ke VPS
 
 ---
 
-# Catatan
+# Catatan Arsitektur
 
 Project ini menggunakan pendekatan **Next.js Fullstack**.
 
 Frontend dan Backend berada dalam satu project menggunakan **App Router** serta **Route Handler (`app/api`)** sehingga tidak diperlukan backend terpisah pada tahap awal pengembangan.
 
-Apabila kebutuhan aplikasi berkembang di masa depan, backend dapat dipisahkan menjadi service tersendiri tanpa mengubah arsitektur frontend secara signifikan.
+Aplikasi mendukung dua tampilan utama:
+1. **Mobile-first PWA (`/dashboard`)**: Diperuntukkan bagi pengguna Parent.
+2. **Desktop Web Console (`/admin`)**: Diperuntukkan bagi Administrator.

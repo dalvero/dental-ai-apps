@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 
 // Route API yang wajib login untuk diakses
-const PROTECTED_API_PREFIXES = ["/api/children"];
+const PROTECTED_API_PREFIXES = ["/api/children", "/api/auth/me"];
 
 // Route halaman yang wajib login untuk diakses
-const PROTECTED_PAGE_PREFIXES = ["/add-child", "/dashboard"];
+const PROTECTED_PAGE_PREFIXES = ["/add-child", "/dashboard", "/admin"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Jika membuka halaman admin login
+  if (pathname === "/admin/login") {
+    const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+    const payload = token ? await verifyToken(token) : null;
+    if (payload && payload.role === "ADMIN") {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
+    return NextResponse.next();
+  }
 
   const isProtectedApi = PROTECTED_API_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix)
@@ -31,8 +41,17 @@ export async function middleware(request: NextRequest) {
         { status: 401 }
       );
     }
+    // Jika mencoba akses halaman admin tanpa token, redirect ke /admin/login
+    if (pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // Jika mengakses halaman admin tapi role bukan ADMIN, redirect ke /admin/login
+  if (pathname.startsWith("/admin") && payload.role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
   // Teruskan userId & role ke route handler lewat header,
@@ -49,5 +68,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/children/:path*", "/add-child/:path*", "/dashboard/:path*"],
+  matcher: [
+    "/api/children/:path*",
+    "/api/auth/me",
+    "/add-child/:path*",
+    "/dashboard/:path*",
+    "/admin/:path*",
+  ],
 };
