@@ -223,3 +223,36 @@ Frontend dan Backend berada dalam satu project menggunakan **App Router** serta 
 Aplikasi mendukung dua tampilan utama:
 1. **Mobile-first PWA (`/dashboard`)**: Diperuntukkan bagi pengguna Parent.
 2. **Desktop Web Console (`/admin`)**: Diperuntukkan bagi Administrator.
+
+---
+
+# Panduan Setup Rekan Tim Baru (Onboarding Colleague)
+
+Saat membagikan project ini kepada rekan tim:
+
+### 1. Install Dependencies
+```bash
+git clone <URL_REPOSITORY_GITHUB>
+cd dental-ai-apps
+npm install
+```
+
+### 2. Konfigurasi File Environment (`.env`)
+Buat file `.env` di root project (gunakan `.env.example` sebagai acuan):
+```env
+# Koneksi Supabase Database (Session Pooler)
+DATABASE_URL="postgresql://postgres.idjmfcdkxxzpuocklbck:dentalaiapps123@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres"
+
+# JWT Secret Token
+JWT_SECRET="6KIzfiURJPtvxRSDiWrnzpF0mnjsOJXwPo5qmQgGvMY="
+```
+
+### 3. Generate Prisma Client Client
+```bash
+npx prisma generate
+```
+
+### 4. Jalankan Server Lokal
+```bash
+npm run dev
+```
