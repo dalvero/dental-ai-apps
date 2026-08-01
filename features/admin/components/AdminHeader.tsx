@@ -12,15 +12,11 @@ export default function AdminHeader({
   subtitle = "Ringkasan statistik dan aktivitas sistem Dental AI hari ini",
 }: AdminHeaderProps) {
   return (
-    <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-8 py-4 flex items-center justify-between shadow-xs">
+    <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-300 px-8 py-5 flex items-center justify-between shadow-xs">
       {/* Left: Page Title */}
       <div>
         <h2 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
           {title}
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
         </h2>
         <p className="text-xs text-slate-500 mt-0.5 font-medium">{subtitle}</p>
       </div>
@@ -35,9 +31,6 @@ export default function AdminHeader({
             placeholder="Cari user, anak, atau hasil scan..."
             className="w-full pl-10 pr-10 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
           />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-slate-200/70 text-slate-500 px-1.5 py-0.5 rounded border border-slate-300 font-mono font-semibold">
-            ⌘K
-          </kbd>
         </div>
 
         {/* Refresh Button */}
@@ -55,12 +48,6 @@ export default function AdminHeader({
             <Bell size={16} />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500" />
           </button>
-        </div>
-
-        {/* System Status Pill */}
-        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs text-emerald-800 font-semibold shadow-xs">
-          <Sparkles size={14} className="text-emerald-600" />
-          <span>System Ready</span>
         </div>
       </div>
     </header>

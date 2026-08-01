@@ -18,6 +18,7 @@ interface UserState {
   fetchUser: () => Promise<void>;
   setActiveChild: (child: Child | null) => void;
   addChildToState: (child: Child) => void;
+  clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -75,6 +76,16 @@ export const useUserStore = create<UserState>((set, get) => ({
         children: updatedChildren,
         activeChild: state.activeChild || child,
       };
+    });
+  },
+
+  clearUser: () => {
+    set({
+      user: null,
+      children: [],
+      activeChild: null,
+      isLoading: false,
+      error: null,
     });
   },
 }));

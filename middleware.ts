@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 
 // Route API yang wajib login untuk diakses
-const PROTECTED_API_PREFIXES = ["/api/children", "/api/auth/me"];
+const PROTECTED_API_PREFIXES = ["/api/children", "/api/auth/me", "/api/admin"];
 
 // Route halaman yang wajib login untuk diakses
 const PROTECTED_PAGE_PREFIXES = ["/add-child", "/dashboard", "/admin"];
@@ -49,8 +49,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Jika mengakses halaman admin tapi role bukan ADMIN, redirect ke /admin/login
-  if (pathname.startsWith("/admin") && payload.role !== "ADMIN") {
+  // Jika mengakses API/halaman admin tapi role bukan ADMIN
+  if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && payload.role !== "ADMIN") {
+    if (pathname.startsWith("/api/admin")) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden. Hanya admin yang diizinkan." },
+        { status: 403 }
+      );
+    }
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
@@ -71,6 +77,7 @@ export const config = {
   matcher: [
     "/api/children/:path*",
     "/api/auth/me",
+    "/api/admin/:path*",
     "/add-child/:path*",
     "/dashboard/:path*",
     "/admin/:path*",
