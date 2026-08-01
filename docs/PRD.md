@@ -125,6 +125,7 @@ dental-ai-apps/
 │   │    ├── dashboard
 │   │    ├── detection
 │   │    ├── education
+│   │    │    └── page.tsx
 │   │    ├── history
 │   │    ├── profile
 │   │    └── layout.tsx
@@ -137,12 +138,23 @@ dental-ai-apps/
 │   │    ├── layout.tsx
 │   │    └── page.tsx
 │   ├── api/
+│   │    ├── admin/
+│   │    │    ├── articles/
+│   │    │    │    ├── [id]/route.ts
+│   │    │    │    └── route.ts
+│   │    │    └── education/
+│   │    │         ├── [id]/route.ts
+│   │    │         └── route.ts
+│   │    ├── articles/
+│   │    │    └── route.ts
 │   │    ├── auth/
 │   │    │    ├── login/route.ts
 │   │    │    ├── register/route.ts
 │   │    │    └── me/route.ts
-│   │    └── children/
-│   │         ├── [id]/route.ts
+│   │    ├── children/
+│   │    │    ├── [id]/route.ts
+│   │    │    └── route.ts
+│   │    └── education/
 │   │         └── route.ts
 │   ├── favicon.ico
 │   ├── globals.css
@@ -152,10 +164,12 @@ dental-ai-apps/
 ├── components/
 │   ├── common/
 │   ├── layout/
-│   │    └── app-header.tsx
+│   │    ├── app-header.tsx
+│   │    └── bot-navbar.tsx
 │   └── ui/
 │
 ├── docs/
+│   ├── FEATURES.md
 │   ├── PRD.md
 │   ├── PROGRESS_LOG.md
 │   └── SETUP.md
@@ -165,9 +179,13 @@ dental-ai-apps/
 │   ├── admin/
 │   │    ├── components/
 │   │    │    ├── AdminHeader.tsx
+│   │    │    ├── AdminOverviewAnalytics.tsx
 │   │    │    ├── AdminSidebar.tsx
 │   │    │    ├── AdminStatGrid.tsx
+│   │    │    ├── ArticleManagementTable.tsx
 │   │    │    ├── ChecklistVerificationCard.tsx
+│   │    │    ├── EducationManagement.tsx
+│   │    │    ├── EducationQuizEditor.tsx
 │   │    │    ├── RecentDetectionsTable.tsx
 │   │    │    └── UserManagementTable.tsx
 │   │    ├── login/
@@ -177,9 +195,9 @@ dental-ai-apps/
 │   ├── checklist/
 │   ├── dashboard/
 │   │    ├── components/
-│   │    │    ├── ArticleCard.tsx
 │   │    │    ├── ChildSelector.tsx
 │   │    │    ├── DentalVisitCard.tsx
+│   │    │    ├── EducationCard.tsx
 │   │    │    ├── FeatureGrid.tsx
 │   │    │    ├── HeroCard.tsx
 │   │    │    ├── ReminderCard.tsx
@@ -187,6 +205,9 @@ dental-ai-apps/
 │   │    └── DashboardPage.tsx
 │   ├── detection/
 │   ├── education/
+│   │    ├── components/
+│   │    │    └── InteractiveQuizModal.tsx
+│   │    └── EducationPage.tsx
 │   ├── history/
 │   ├── profile/
 │   ├── streak/
@@ -199,7 +220,8 @@ dental-ai-apps/
 │   └── prisma.ts
 │
 ├── prisma/
-│   └── schema.prisma
+│   ├── schema.prisma
+│   └── seed.ts
 │
 ├── public/
 │   ├── icons/
@@ -209,30 +231,31 @@ dental-ai-apps/
 │   └── illustrations/
 │
 ├── services/
+│   ├── admin/
+│   │    ├── article.service.ts
+│   │    └── education.service.ts
 │   ├── auth/
 │   │    ├── auth.service.ts
 │   │    ├── login.service.ts
 │   │    └── register.service.ts
-│   └── child/
-│        └── child.service.ts
+│   ├── child/
+│   │    └── child.service.ts
+│   └── education.service.ts
 │
 ├── store/
 │   └── useUserStore.ts
 │
-├── styles/
-│
 ├── types/
 │   ├── api.ts
 │   ├── child.ts
+│   ├── education.ts
 │   ├── index.ts
+│   ├── quiz.ts
 │   └── user.ts
-│
-├── utils/
 │
 ├── middleware.ts
 ├── next.config.ts
 ├── package.json
-└── tsconfig.json
 ```
 
 **Fungsi folder:**

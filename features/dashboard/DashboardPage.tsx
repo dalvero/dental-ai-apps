@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import ArticleCard from "./components/ArticleCard";
+import EducationCard from "./components/EducationCard";
 import AppHeader from "@/components/layout/app-header";
 import HeroCard from "./components/HeroCard";
 import FeatureGrid from "./components/FeatureGrid";
@@ -24,7 +24,7 @@ export default function DashboardPage() {
     <div className="min-h-screen pb-32">
       {/* Top Navigation */}
       <AppHeader
-        title={`Hello, ${parentName}  `}
+        title={`Hello, ${parentName}`}
         notificationCount={1}
       />
 
@@ -47,8 +47,8 @@ export default function DashboardPage() {
         {/* Reminder Card */}
         <ReminderCard />
 
-        {/* Article Card */}
-        <ArticleCard />
+        {/* Education Card */}
+        <EducationCard />
       </main>
     </div>
   );

@@ -32,12 +32,12 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <div className="admin-layout min-h-screen bg-slate-50 text-slate-800 flex font-sans antialiased w-full">
+    <div className="admin-layout h-screen bg-slate-50 text-slate-800 flex font-sans antialiased w-full overflow-hidden">
       {/* Sidebar Navigation (Left Desktop Column) */}
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content Area (Right Desktop Column) */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Topbar Header */}
         <AdminHeader
           title={
@@ -79,6 +79,9 @@ export default function AdminDashboardPage() {
                 totalParents={dashboardData?.totalParents}
                 totalChildren={dashboardData?.totalChildren}
                 ageDemographics={dashboardData?.ageDemographics}
+                totalEducation={dashboardData?.totalEducation}
+                totalArticles={dashboardData?.totalArticles}
+                articleStats={dashboardData?.articleStats}
               />
             </div>
           )}

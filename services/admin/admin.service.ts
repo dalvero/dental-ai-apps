@@ -6,6 +6,10 @@ export interface AdminDashboardData {
   totalChildren: number;
   totalEducation: number;
   totalArticles: number;
+  articleStats?: {
+    published: number;
+    draft: number;
+  };
   ageDemographics: {
     balita: number;
     usiaDini: number;

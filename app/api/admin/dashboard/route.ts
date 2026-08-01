@@ -14,9 +14,22 @@ export async function GET(request: Request) {
     }
 
     // Hitung total real-time dari database Prisma / Supabase
-    const [totalParents, totalChildren, allChildren, usersList] = await Promise.all([
+    const [
+      totalParents,
+      totalChildren,
+      totalEducation,
+      totalArticles,
+      publishedArticles,
+      draftArticles,
+      allChildren,
+      usersList,
+    ] = await Promise.all([
       prisma.user.count({ where: { role: "PARENT" } }),
       prisma.child.count(),
+      prisma.education.count(),
+      prisma.article.count(),
+      prisma.article.count({ where: { status: "PUBLISHED" } }),
+      prisma.article.count({ where: { status: "DRAFT" } }),
       prisma.child.findMany({ select: { birthDate: true } }),
       prisma.user.findMany({
         select: {
@@ -83,8 +96,12 @@ export async function GET(request: Request) {
       data: {
         totalParents,
         totalChildren,
-        totalEducation: 2, // Total materi edukasi
-        totalArticles: 3,  // Total artikel edukasi
+        totalEducation,
+        totalArticles,
+        articleStats: {
+          published: publishedArticles,
+          draft: draftArticles,
+        },
         ageDemographics: {
           balita,
           usiaDini,
@@ -95,10 +112,10 @@ export async function GET(request: Request) {
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin dashboard API error:", error);
     return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
+      { success: false, message: error?.message || "Internal Server Error" },
       { status: 500 }
     );
   }

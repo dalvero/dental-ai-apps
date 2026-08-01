@@ -79,3 +79,27 @@ Dokumentasi Progres Log adalah catatan log untuk setiap progress yang dilakukan.
     - Membuat Backend Admin dashboard agar terhubung ke halaman Mobile PWA
     - Jika Backend Admin sudah selesai, lanjut ke halaman Mobile PWA yang masih tersisa.
     - Memastikan data yang tampil di Mobile PWA sudah bisa dimanajemen oleh Admin
+#
+1. **Tanggal Log :** 1 Agustus 2026 - Sesi 2. **(Fullstack, Branch: main)**
+2. Progress sampai pada pengintegrasian real-time database Supabase ke halaman Mobile PWA Parent (`/education` & Dashboard `EducationCard`), pembuatan modal pengerjaan kuis interaktif dengan penentuan skor otomatis & kunci jawaban, penyempurnaan desain kartu vertikal lapang (sesuai spesifikasi UI), otomatisasi pembersihan kuis terhapus pada API Admin, penyembunyi scrollbar cross-browser `.no-scrollbar`, serta sentralisasi tipe domain TypeScript di `@/types`.
+3. List fitur yang selesai:
+    - ✅ Integrasi Data Real Database Edukasi ke Mobile PWA (`/api/education` & `/api/articles`)
+    - ✅ Halaman PWA Edukasi & Kuis Parent (`app/(main)/education/page.tsx` & `EducationPage.tsx`)
+    - ✅ Komponen Modal Kuis Interaktif PWA (`InteractiveQuizModal.tsx`) dengan Perhitungan Skor & Pembahasan Kunci Jawaban
+    - ✅ Redesain Kartu Materi Edukasi Vertikal Lapang (Banner Image Overlay, Category Badge, Meta Type & Duration, Button Buka Materi & Ikuti Kuis)
+    - ✅ Widget Dashboard PWA Real-Time (`EducationCard.tsx`)
+    - ✅ Modal Konfirmasi Hapus Kustom (Ganti `confirm()` browser dengan pop-up animated modal)
+    - ✅ Pemisahan Komponen Modular (`EducationQuizEditor.tsx`, `InteractiveQuizModal.tsx`, `EducationCard.tsx`)
+    - ✅ Sentralisasi Tipe Domain TypeScript (`types/quiz.ts`, `types/education.ts`, `types/index.ts`)
+    - ✅ Utility Cross-Browser Scrollbar Hiding (`.no-scrollbar`) & Eliminasi Border Layout Shift pada Filter Pills
+    - ✅ Penanganan Atomis Hapus Kuis pada API Admin (`PUT /api/admin/education/[id]`)
+4. Kendala:
+    - ✅ Tombol kuis interaktif tidak langsung muncul saat admin membuat kuis. (Solve, mengotomatiskan `hasQuiz: true` di server API & menyederhanakan perbandingan larik `quizQuestions`)
+    - ✅ Tombol kuis masih muncul saat kuis dihapus dari admin. (Solve, menambahkan query `deleteMany` atomis pada tabel `QuizQuestion` di route PUT admin saat `hasQuiz: false`)
+    - ✅ Pergeseran kecil 2px pada tombol filter saat diklik. (Solve, menyelaraskan 1px `border` pada seluruh state tombol aktif & non-aktif)
+5. Next Progress (Developer 2):
+    1. Merapikan halaman/tab Manajemen Artikel pada dashboard admin.
+    2. Memastikan data yang tampil di halaman/tab Manajemen Artikel diambil dari database.
+    3. Membuat CRUD di halaman/tab Manajemen Artikel.
+    4. Menghubungkan artikel pada halaman mobile pwa.
+    5. Membuat halaman kuis interaktif, materi edukasi pdf/video, di tampilan Mobile PWA.

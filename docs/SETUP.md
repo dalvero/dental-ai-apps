@@ -7,7 +7,7 @@
 # Setup Documentation
 
 **Tanggal Setup :** 16 Juli 2026  
-**Terakhir Diperbarui :** 29 Juli 2026  
+**Terakhir Diperbarui :** 1 Agustus 2026  
 
 Dokumentasi ini menjelaskan proses setup awal project, struktur folder terbaru, serta library yang digunakan selama proses pengembangan.
 
@@ -43,6 +43,7 @@ dental-ai-apps/
 │   │    ├── dashboard
 │   │    ├── detection
 │   │    ├── education
+│   │    │    └── page.tsx
 │   │    ├── history
 │   │    ├── profile
 │   │    └── layout.tsx
@@ -55,12 +56,23 @@ dental-ai-apps/
 │   │    ├── layout.tsx
 │   │    └── page.tsx
 │   ├── api/
+│   │    ├── admin/
+│   │    │    ├── articles/
+│   │    │    │    ├── [id]/route.ts
+│   │    │    │    └── route.ts
+│   │    │    └── education/
+│   │    │         ├── [id]/route.ts
+│   │    │         └── route.ts
+│   │    ├── articles/
+│   │    │    └── route.ts
 │   │    ├── auth/
 │   │    │    ├── login/route.ts
 │   │    │    ├── register/route.ts
 │   │    │    └── me/route.ts
-│   │    └── children/
-│   │         ├── [id]/route.ts
+│   │    ├── children/
+│   │    │    ├── [id]/route.ts
+│   │    │    └── route.ts
+│   │    └── education/
 │   │         └── route.ts
 │   ├── favicon.ico
 │   ├── globals.css
@@ -70,10 +82,12 @@ dental-ai-apps/
 ├── components/
 │   ├── common/
 │   ├── layout/
-│   │    └── app-header.tsx
+│   │    ├── app-header.tsx
+│   │    └── bot-navbar.tsx
 │   └── ui/
 │
 ├── docs/
+│   ├── FEATURES.md
 │   ├── PRD.md
 │   ├── PROGRESS_LOG.md
 │   └── SETUP.md
@@ -83,9 +97,13 @@ dental-ai-apps/
 │   ├── admin/
 │   │    ├── components/
 │   │    │    ├── AdminHeader.tsx
+│   │    │    ├── AdminOverviewAnalytics.tsx
 │   │    │    ├── AdminSidebar.tsx
 │   │    │    ├── AdminStatGrid.tsx
+│   │    │    ├── ArticleManagementTable.tsx
 │   │    │    ├── ChecklistVerificationCard.tsx
+│   │    │    ├── EducationManagement.tsx
+│   │    │    ├── EducationQuizEditor.tsx
 │   │    │    ├── RecentDetectionsTable.tsx
 │   │    │    └── UserManagementTable.tsx
 │   │    ├── login/
@@ -95,9 +113,9 @@ dental-ai-apps/
 │   ├── checklist/
 │   ├── dashboard/
 │   │    ├── components/
-│   │    │    ├── ArticleCard.tsx
 │   │    │    ├── ChildSelector.tsx
 │   │    │    ├── DentalVisitCard.tsx
+│   │    │    ├── EducationCard.tsx
 │   │    │    ├── FeatureGrid.tsx
 │   │    │    ├── HeroCard.tsx
 │   │    │    ├── ReminderCard.tsx
@@ -105,6 +123,9 @@ dental-ai-apps/
 │   │    └── DashboardPage.tsx
 │   ├── detection/
 │   ├── education/
+│   │    ├── components/
+│   │    │    └── InteractiveQuizModal.tsx
+│   │    └── EducationPage.tsx
 │   ├── history/
 │   ├── profile/
 │   ├── streak/
@@ -117,7 +138,8 @@ dental-ai-apps/
 │   └── prisma.ts
 │
 ├── prisma/
-│   └── schema.prisma
+│   ├── schema.prisma
+│   └── seed.ts
 │
 ├── public/
 │   ├── icons/
@@ -127,25 +149,27 @@ dental-ai-apps/
 │   └── illustrations/
 │
 ├── services/
+│   ├── admin/
+│   │    ├── article.service.ts
+│   │    └── education.service.ts
 │   ├── auth/
 │   │    ├── auth.service.ts
 │   │    ├── login.service.ts
 │   │    └── register.service.ts
-│   └── child/
-│        └── child.service.ts
+│   ├── child/
+│   │    └── child.service.ts
+│   └── education.service.ts
 │
 ├── store/
 │   └── useUserStore.ts
 │
-├── styles/
-│
 ├── types/
 │   ├── api.ts
 │   ├── child.ts
+│   ├── education.ts
 │   ├── index.ts
+│   ├── quiz.ts
 │   └── user.ts
-│
-├── utils/
 │
 ├── middleware.ts
 ├── next.config.ts
@@ -161,18 +185,19 @@ dental-ai-apps/
 |----------|---------|
 | **app/** | Routing utama aplikasi menggunakan App Router Next.js. |
 | **app/admin/** | Routing khusus Panel Dashboard & Login Admin (Desktop Web Layout). |
-| **app/api/** | REST API menggunakan Route Handler Next.js (`/api/auth/login`, `/api/auth/me`, `/api/children`). |
+| **app/api/** | REST API Route Handlers (`/api/auth`, `/api/admin/education`, `/api/admin/articles`, `/api/education`, `/api/articles`). |
 | **components/** | Komponen UI reusable (`components/ui`, `components/layout`). |
-| **features/** | Mengelompokkan kode berdasarkan fitur bisnis (`features/admin`, `features/dashboard`, `features/auth`). |
-| **features/admin/** | Modul komponen visual untuk Dashboard Admin (Sidebar, Header, Stat Grid, Tables). |
+| **features/** | Mengelompokkan kode berdasarkan fitur bisnis (`features/admin`, `features/dashboard`, `features/education`). |
+| **features/admin/** | Modul komponen visual Dashboard Admin (Sidebar, Header, Stat Grid, Table Materi, Table Artikel, Table User, Quiz Editor). |
+| **features/education/** | Modul Mobile PWA Edukasi (Kartu Vertikal Materi, Filter Tipe, Search Bar, Modal Kuis Interaktif). |
 | **hooks/** | Custom React Hooks. |
-| **lib/** | Helper internal (`auth.ts` JWT signer/verifier, `prisma.ts` instance). |
-| **services/** | Layer komunikasi dengan REST API menggunakan Axios. |
+| **lib/** | Helper internal (`auth.ts` JWT signer/verifier, `prisma.ts` instance singleton). |
+| **services/** | Layer komunikasi dengan REST API menggunakan Axios (`services/admin/`, `services/education.service.ts`). |
 | **store/** | Global State Management menggunakan Zustand (`store/useUserStore.ts`). |
-| **types/** | Interface dan type TypeScript (`user.ts`, `child.ts`, `api.ts`). |
+| **types/** | Interface dan type TypeScript tersentralisasi (`education.ts`, `quiz.ts`, `user.ts`, `child.ts`, `api.ts`). |
 | **public/** | Asset statis (icon, ilustrasi, avatar gender `boy_gender.png` & `girl_gender.png`). |
-| **docs/** | Dokumentasi project (`PRD.md`, `PROGRESS_LOG.md`, `SETUP.md`). |
-| **prisma/** | Schema database menggunakan Prisma ORM. |
+| **docs/** | Dokumentasi project (`PRD.md`, `PROGRESS_LOG.md`, `SETUP.md`, `FEATURES.md`). |
+| **prisma/** | Schema database menggunakan Prisma ORM (`schema.prisma`) & file seeding (`seed.ts`). |
 | **middleware.ts** | Middleware untuk Authentication, Authorization & Route Protection. |
 
 ---
@@ -193,66 +218,13 @@ dental-ai-apps/
 | **class-variance-authority (CVA)** | Component Variant | Membuat variasi komponen UI. |
 | **jose** | JWT Management | Sign dan verify token JWT untuk session authentication. |
 | **bcryptjs** | Password Hashing | Enkripsi & verifikasi password di database. |
-| **@prisma/client** | ORM Client | Query data PostgreSQL Supabase. |
+| **@prisma/client** | ORM Client | Query data PostgreSQL Supabase via `@prisma/adapter-pg`. |
 
 ---
 
 # Development Status
 
 - ✅ Setup Project & Struktur Folder
-- ✅ Install Supporting Libraries
-- ✅ Database (Prisma + PostgreSQL / Supabase)
-- ✅ Authentication (JWT + Session Cookie + Middleware Route Protection)
-- ✅ REST API (`/api/auth/login`, `/api/auth/register`, `/api/auth/me`, `/api/children`)
-- ✅ Integrasi Data Parent & Anak di Dashboard Parent (`useUserStore.ts` & `ChildSelector.tsx`)
-- ✅ Admin Panel UI & Admin Login Page (Desktop Web Layout, Light PWA Theme)
-- ⏳ Integrasi Backend Admin Dashboard ke DB
-- ⏳ Progressive Web App (PWA)
-- ⏳ AI Integration
-- ⏳ Flutter WebView Integration
-- ⏳ Deployment ke VPS
-
----
-
-# Catatan Arsitektur
-
-Project ini menggunakan pendekatan **Next.js Fullstack**.
-
-Frontend dan Backend berada dalam satu project menggunakan **App Router** serta **Route Handler (`app/api`)** sehingga tidak diperlukan backend terpisah pada tahap awal pengembangan.
-
-Aplikasi mendukung dua tampilan utama:
-1. **Mobile-first PWA (`/dashboard`)**: Diperuntukkan bagi pengguna Parent.
-2. **Desktop Web Console (`/admin`)**: Diperuntukkan bagi Administrator.
-
----
-
-# Panduan Setup Rekan Tim Baru (Onboarding Colleague)
-
-Saat membagikan project ini kepada rekan tim:
-
-### 1. Install Dependencies
-```bash
-git clone <URL_REPOSITORY_GITHUB>
-cd dental-ai-apps
-npm install
-```
-
-### 2. Konfigurasi File Environment (`.env`)
-Buat file `.env` di root project (gunakan `.env.example` sebagai acuan):
-```env
-# Koneksi Supabase Database (Session Pooler)
-DATABASE_URL="postgresql://postgres.idjmfcdkxxzpuocklbck:dentalaiapps123@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres"
-
-# JWT Secret Token
-JWT_SECRET="6KIzfiURJPtvxRSDiWrnzpF0mnjsOJXwPo5qmQgGvMY="
-```
-
-### 3. Generate Prisma Client Client
-```bash
-npx prisma generate
-```
-
-### 4. Jalankan Server Lokal
-```bash
-npm run dev
-```
+- ✅ Database Schema & Migration (User, Child, Education, QuizQuestion, Article)
+- ✅ Admin Panel UI & Real-Time CRUD Management
+- ✅ PWA Parent Education & Interactive Quiz Taker Module

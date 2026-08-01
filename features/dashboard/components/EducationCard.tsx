@@ -4,21 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getPublicEducationResources } from "@/services/education.service";
-import { EducationResource } from "@/types";
+import { EducationResource, EducationCardProps } from "@/types";
 import { extractYouTubeThumbnail } from "@/features/admin/components/EducationManagement";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Video, FileText } from "lucide-react";
 
-interface ArticleCardProps {
-  category?: string;
-  title?: string;
-  description?: string;
-  image?: string;
-  author?: string;
-  readTime?: string;
-  href?: string;
-}
-
-export default function ArticleCard(props: ArticleCardProps) {
+export default function EducationCard(props: EducationCardProps) {
   const [latestResource, setLatestResource] = useState<EducationResource | null>(null);
 
   useEffect(() => {
@@ -57,6 +47,7 @@ export default function ArticleCard(props: ArticleCardProps) {
   }
 
   const displayReadTime = props.readTime || latestResource?.readTime || "3 min read";
+  const displayType = props.type || latestResource?.type || "VIDEO";
   const href = props.href || "/education";
 
   return (
@@ -99,9 +90,15 @@ export default function ArticleCard(props: ArticleCardProps) {
           </p>
 
           <div className="pt-2 flex items-center justify-between text-xs text-slate-400 border-t border-slate-100">
-            <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
-              Video
-            </span>
+            {displayType === "VIDEO" ? (
+              <span className="font-semibold text-rose-700 bg-rose-50 border border-rose-100 px-2.5 py-0.5 rounded-md flex items-center gap-1">
+                <Video size={12} /> Video
+              </span>
+            ) : (
+              <span className="font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-md flex items-center gap-1">
+                <FileText size={12} /> PDF / Document
+              </span>
+            )}
             <span>{displayReadTime}</span>
           </div>
         </div>

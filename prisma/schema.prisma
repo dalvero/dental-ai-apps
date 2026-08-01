@@ -16,6 +16,16 @@ enum Gender {
   FEMALE
 }
 
+enum EducationType {
+  VIDEO
+  DOCUMENT
+}
+
+enum ArticleStatus {
+  PUBLISHED
+  DRAFT
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String
@@ -30,11 +40,56 @@ model User {
 model Child {
   id        String   @id @default(cuid())
   userId    String
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
   birthDate DateTime
   gender    Gender
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@index([userId])
+}
+
+model Education {
+  id            String         @id @default(cuid())
+  title         String
+  description   String?        @db.Text
+  imageUrl      String?
+  type          EducationType  @default(VIDEO)
+  sourceUrl     String
+  category      String         @default("Kesehatan Gigi Anak")
+  readTime      String?        @default("3 min read")
+  hasQuiz       Boolean        @default(true)
+  quizQuestions QuizQuestion[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model QuizQuestion {
+  id            String    @id @default(cuid())
+  educationId   String
+  education     Education @relation(fields: [educationId], references: [id], onDelete: Cascade)
+  question      String
+  options       String[]
+  correctAnswer Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([educationId])
+}
+
+model Article {
+  id            String        @id @default(cuid())
+  title         String
+  description   String?       @db.Text
+  imageUrl      String?
+  category      String        @default("Kesehatan Gigi")
+  author        String        @default("Dr. Ahmad Rizky")
+  readTime      String?       @default("4 min read")
+  content       String?       @db.Text
+  publishedDate DateTime      @default(now())
+  status        ArticleStatus @default(PUBLISHED)
+  views         Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }

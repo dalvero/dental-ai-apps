@@ -13,6 +13,12 @@ import {
 interface AdminOverviewAnalyticsProps {
   totalParents?: number;
   totalChildren?: number;
+  totalEducation?: number;
+  totalArticles?: number;
+  articleStats?: {
+    published: number;
+    draft: number;
+  };
   ageDemographics?: {
     balita: number;
     usiaDini: number;
@@ -23,11 +29,15 @@ interface AdminOverviewAnalyticsProps {
 export default function AdminOverviewAnalytics({
   totalParents = 0,
   totalChildren = 0,
+  totalEducation = 0,
+  totalArticles = 0,
+  articleStats,
   ageDemographics,
 }: AdminOverviewAnalyticsProps) {
   const [timeframe, setTimeframe] = useState<"7D" | "30D">("7D");
 
   // Dataset grafik 7 Hari (harian) vs 30 Hari (mingguan)
+  // TO-DO: Pastikan data grafik ini menggunakan waktu real-time
   const growthData7D = [
     { label: "23 Jul", parents: Math.max(0, totalParents - 2), children: Math.max(0, totalChildren - 2) },
     { label: "24 Jul", parents: Math.max(0, totalParents - 2), children: Math.max(0, totalChildren - 2) },
@@ -82,18 +92,16 @@ export default function AdminOverviewAnalytics({
 
   return (
     <div className="space-y-8">
-      {/* Top Grid: Main Growth Chart & Content Overview */}
+      {/* Main Growth Chart & Content Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column (8/12): User & Children Growth Area Chart */}
+        {/*User & Children Growth Area Chart */}
         <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <TrendingUp size={20} className="text-emerald-600" />
                 Grafik Pertumbuhan Pengguna ({timeframe === "7D" ? "7 Hari Terakhir" : "30 Hari Terakhir"})
               </h3>
               <p className="text-xs text-slate-500 mt-0.5 font-medium flex items-center gap-1">
-                <Calendar size={13} className="text-emerald-600" />
                 {timeframe === "7D"
                   ? "Rincian pendaftaran harian 23 Jul - 29 Jul 2026"
                   : "Rincian pendaftaran mingguan dalam 30 hari terakhir"}
@@ -113,27 +121,25 @@ export default function AdminOverviewAnalytics({
                 </span>
               </div>
 
-              {/* Interaktif Toggle 7D / 30D */}
+              {/* Interaktif Toggle 7 Hari / 30 Hari */}
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <button
                   type="button"
                   onClick={() => setTimeframe("7D")}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 cursor-pointer ${
-                    timeframe === "7D"
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 cursor-pointer ${timeframe === "7D"
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                    }`}
                 >
                   7 Hari
                 </button>
                 <button
                   type="button"
                   onClick={() => setTimeframe("30D")}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 cursor-pointer ${
-                    timeframe === "30D"
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 cursor-pointer ${timeframe === "30D"
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                    }`}
                 >
                   30 Hari
                 </button>
@@ -179,13 +185,12 @@ export default function AdminOverviewAnalytics({
           </div>
         </div>
 
-        {/* Right Column (4/12): Demografi Usia Anak Real-Time & Overview Konten */}
+        {/* Demografi Usia Anak Real-Time & Overview Konten */}
         <div className="lg:col-span-4 space-y-6">
           {/* Demografi Usia Anak Widget Real-Time */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
             <div>
               <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <Baby size={18} className="text-teal-600" />
                 Demografi Kelompok Usia Anak
               </h4>
               <p className="text-xs text-slate-500 mt-0.5 font-medium">
@@ -235,36 +240,35 @@ export default function AdminOverviewAnalytics({
           </div>
 
           {/* Ringkasan Status Konten Widget */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-2">
             <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <BookOpen size={18} className="text-purple-600" />
               Ringkasan Materi & Artikel
             </h4>
 
-            <div className="space-y-3 text-xs">
-              <div className="p-3 bg-purple-50/60 border border-purple-100 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <Video size={16} className="text-purple-600" />
-                  <div>
-                    <p className="font-bold text-slate-800">Materi Edukasi Video & PDF</p>
-                    <p className="text-[11px] text-slate-500">2 Sumber aktif dengan kuis</p>
+            <div className="space-y-4 text-xs">
+              <div className="py-3 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="min-w-0">
+                    <p className="font-bold text-slate-800 truncate">Materi Edukasi Video & PDF</p>
+                    <p className="text-[11px] text-slate-500 truncate">{totalEducation} Sumber aktif di database</p>
                   </div>
                 </div>
-                <span className="font-extrabold text-purple-700 bg-white px-2.5 py-1 rounded-lg border border-purple-200">
-                  2 Unit
+                <span className="font-extrabold text-purple-700 bg-white px-2.5 py-1 rounded-lg border border-purple-200 shrink-0 whitespace-nowrap">
+                  {totalEducation} Unit
                 </span>
               </div>
 
-              <div className="p-3 bg-amber-50/60 border border-amber-100 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <FileText size={16} className="text-amber-600" />
-                  <div>
-                    <p className="font-bold text-slate-800">Artikel Panduan Orang Tua</p>
-                    <p className="text-[11px] text-slate-500">2 Terbit &bull; 1 Draft</p>
+              <div className="py-3 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="min-w-0">
+                    <p className="font-bold text-slate-800 truncate">Artikel Panduan Orang Tua</p>
+                    <p className="text-[11px] text-slate-500 truncate">
+                      {articleStats?.published ?? 0} Terbit &bull; {articleStats?.draft ?? 0} Draft
+                    </p>
                   </div>
                 </div>
-                <span className="font-extrabold text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-200">
-                  3 Artikel
+                <span className="font-extrabold text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-200 shrink-0 whitespace-nowrap">
+                  {totalArticles} Artikel
                 </span>
               </div>
             </div>

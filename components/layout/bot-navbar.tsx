@@ -23,7 +23,7 @@ const LEFT_ITEMS: NavItem[] = [
 ];
 
 const RIGHT_ITEMS: NavItem[] = [
-  { href: "/learn", label: "Learn", icon: GraduationCap },
+  { href: "/education", label: "Edukasi", icon: GraduationCap },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -55,12 +55,12 @@ export default function BottomNav() {
         }}
     >
       {LEFT_ITEMS.map((item) => (
-        <NavLink key={item.href} item={item} isActive={pathname === item.href} />
+        <NavLink key={item.href} item={item} isActive={pathname === item.href || pathname.startsWith(item.href)} />
       ))}
 
       {/* Scan FAB */}
       <Link
-        href="/scan"
+        href="/detection"
         aria-label="Scan"
         className="relative -top-7 flex flex-col items-center gap-1 group"
       >
@@ -72,7 +72,7 @@ export default function BottomNav() {
       </Link>
 
       {RIGHT_ITEMS.map((item) => (
-        <NavLink key={item.href} item={item} isActive={pathname === item.href} />
+        <NavLink key={item.href} item={item} isActive={pathname === item.href || pathname.startsWith(item.href)} />
       ))}
     </nav>
   );

@@ -219,6 +219,15 @@ body:has(.admin-layout) .app-container,
     overflow: visible !important;
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;

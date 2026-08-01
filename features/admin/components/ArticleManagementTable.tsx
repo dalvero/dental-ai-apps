@@ -1,20 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Plus, Eye, Trash2, Edit3, FileText, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, Plus, Eye, Trash2, Edit3, FileText, CheckCircle2, AlertCircle, Sparkles, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import {
+  getArticles,
+  createArticle,
+  updateArticle,
+  deleteArticle,
+} from "@/services/admin/article.service";
+import { Article, ArticleStatus } from "@/types";
 
-interface ArticleRow {
-  id: string;
-  title: string;
-  category: string;
-  author: string;
-  publishedDate: string;
-  status: "PUBLISHED" | "DRAFT";
-  views: number;
-}
+export type ArticleRow = Article;
 
 export default function ArticleManagementTable() {
+  const [articles, setArticles] = useState<ArticleRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "PUBLISHED" | "DRAFT">("ALL");
 
@@ -22,41 +25,34 @@ export default function ArticleManagementTable() {
   const [showModal, setShowModal] = useState(false);
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
 
+  // Custom Delete Confirmation Modal State
+  const [deleteArticleItem, setDeleteArticleItem] = useState<ArticleRow | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   // Form State
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Kesehatan Gigi");
   const [author, setAuthor] = useState("Dr. Ahmad Rizky");
-  const [status, setStatus] = useState<"PUBLISHED" | "DRAFT">("PUBLISHED");
+  const [status, setStatus] = useState<ArticleStatus>("PUBLISHED");
 
-  const [articles, setArticles] = useState<ArticleRow[]>([
-    {
-      id: "art_1",
-      title: "Mengenal White Spot: Tanda Awal Gigi Berlubang Pada Anak",
-      category: "Kesehatan Gigi",
-      author: "Dr. Ahmad Rizky",
-      publishedDate: "28 Jul 2026",
-      status: "PUBLISHED",
-      views: 342,
-    },
-    {
-      id: "art_2",
-      title: "Tips Memilih Pasta Gigi Berfluoride Yang Aman Untuk Balita",
-      category: "Tips Perawatan",
-      author: "Dr. Ahmad Rizky",
-      publishedDate: "25 Jul 2026",
-      status: "PUBLISHED",
-      views: 518,
-    },
-    {
-      id: "art_3",
-      title: "Bahaya Makanan Tinggi Gula Terhadap Enamel Gigi Anak",
-      category: "Nutrisi & Makanan",
-      author: "Tim Redaksi Dental AI",
-      publishedDate: "20 Jul 2026",
-      status: "DRAFT",
-      views: 0,
-    },
-  ]);
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getArticles();
+      if (res.success && res.data) {
+        setArticles(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to load article data:", err);
+      toast.error("Gagal mengambil data artikel dari server.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleOpenAddModal = () => {
     setEditingArticleId(null);
@@ -76,42 +72,72 @@ export default function ArticleManagementTable() {
     setShowModal(true);
   };
 
-  const handleSaveArticle = (e: React.FormEvent) => {
+  const handleSaveArticle = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
       toast.error("Mohon isi judul artikel");
       return;
     }
 
-    if (editingArticleId) {
-      setArticles((prev) =>
-        prev.map((a) =>
-          a.id === editingArticleId
-            ? { ...a, title, category, author, status }
-            : a
-        )
-      );
-      toast.success("Artikel berhasil diperbarui!");
-    } else {
-      const newArt: ArticleRow = {
-        id: `art_${Date.now()}`,
-        title,
-        category,
-        author,
-        publishedDate: "Hari ini",
-        status,
-        views: 0,
-      };
-      setArticles([newArt, ...articles]);
-      toast.success("Artikel baru berhasil ditambahkan!");
+    setIsSubmitting(true);
+    try {
+      if (editingArticleId) {
+        const res = await updateArticle(editingArticleId, {
+          title,
+          category,
+          author,
+          status,
+        });
+        if (res.success) {
+          toast.success("Artikel berhasil diperbarui!");
+          loadData();
+        } else {
+          toast.error(res.message || "Gagal memperbarui artikel");
+        }
+      } else {
+        const res = await createArticle({
+          title,
+          category,
+          author,
+          status,
+        });
+        if (res.success) {
+          toast.success("Artikel baru berhasil ditambahkan!");
+          loadData();
+        } else {
+          toast.error(res.message || "Gagal menambahkan artikel");
+        }
+      }
+      setShowModal(false);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Terjadi kesalahan server");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setShowModal(false);
   };
 
-  const handleDeleteArticle = (id: string) => {
-    setArticles((prev) => prev.filter((a) => a.id !== id));
-    toast.success("Artikel berhasil dihapus");
+  const handlePromptDeleteArticle = (art: ArticleRow) => {
+    setDeleteArticleItem(art);
+  };
+
+  const handleConfirmDeleteArticle = async () => {
+    if (!deleteArticleItem) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await deleteArticle(deleteArticleItem.id);
+      if (res.success) {
+        toast.success(`Artikel "${deleteArticleItem.title}" berhasil dihapus`);
+        setDeleteArticleItem(null);
+        loadData();
+      } else {
+        toast.error(res.message || "Gagal menghapus artikel");
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Terjadi kesalahan server");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const filteredArticles = articles.filter((a) => {
@@ -132,7 +158,7 @@ export default function ArticleManagementTable() {
             Manajemen Artikel Edukasi Gigi
           </h3>
           <p className="text-xs text-slate-500 mt-0.5 font-medium">
-            Daftar artikel dan panduan kesehatan gigi anak untuk pengguna orang tua
+            Daftar artikel dan panduan kesehatan gigi anak untuk pengguna orang tua (Database Real Data)
           </p>
         </div>
 
@@ -199,10 +225,19 @@ export default function ArticleManagementTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700">
-            {filteredArticles.length === 0 ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={6} className="py-8 text-center text-slate-400 font-medium">
-                  Tidak ada artikel yang ditemukan.
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin text-emerald-600" size={18} />
+                    Memuat data artikel...
+                  </div>
+                </td>
+              </tr>
+            ) : filteredArticles.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-slate-400 font-medium">
+                  Tidak ada artikel yang ditemukan di database.
                 </td>
               </tr>
             ) : (
@@ -247,7 +282,7 @@ export default function ArticleManagementTable() {
                         <Edit3 size={16} />
                       </button>
                       <button
-                        onClick={() => handleDeleteArticle(art.id)}
+                        onClick={() => handlePromptDeleteArticle(art)}
                         className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
                         title="Hapus Artikel"
                       >
@@ -265,7 +300,7 @@ export default function ArticleManagementTable() {
       {/* Modal Tambah / Edit Artikel */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 md:p-8 space-y-6 my-8">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 md:p-8 space-y-6 my-8 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -335,7 +370,7 @@ export default function ArticleManagementTable() {
                 </label>
                 <select
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as "PUBLISHED" | "DRAFT")}
+                  onChange={(e) => setStatus(e.target.value as ArticleStatus)}
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-emerald-500"
                 >
                   <option value="PUBLISHED">Terbit (Published)</option>
@@ -354,12 +389,52 @@ export default function ArticleManagementTable() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                  disabled={isSubmitting}
+                  className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                 >
+                  {isSubmitting && <Loader2 size={14} className="animate-spin" />}
                   Simpan Artikel
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Custom Konfirmasi Hapus Artikel */}
+      {deleteArticleItem && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-md p-6 text-center space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-full bg-rose-100 text-rose-600 mx-auto flex items-center justify-center border-4 border-rose-50 shrink-0">
+              <AlertTriangle size={28} />
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-base font-bold text-slate-900">Konfirmasi Hapus Artikel</h3>
+              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                Apakah Anda yakin ingin menghapus artikel <span className="font-bold text-slate-800">&quot;{deleteArticleItem.title}&quot;</span>? Tindakan ini tidak dapat dibatalkan.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteArticleItem(null)}
+                disabled={isDeleting}
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteArticle}
+                disabled={isDeleting}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                {isDeleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+                Hapus Permanen
+              </button>
+            </div>
           </div>
         </div>
       )}

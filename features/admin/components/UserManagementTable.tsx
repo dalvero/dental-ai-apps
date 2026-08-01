@@ -39,7 +39,6 @@ export default function UserManagementTable({
       <div className="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <UserCheck size={18} className="text-emerald-600" />
             Manajemen User & Profil Anak
           </h3>
           <p className="text-xs text-slate-500 mt-0.5 font-medium">
@@ -63,25 +62,22 @@ export default function UserManagementTable({
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
             <button
               onClick={() => setRoleFilter("ALL")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                roleFilter === "ALL" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${roleFilter === "ALL" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
+                }`}
             >
               Semua
             </button>
             <button
               onClick={() => setRoleFilter("PARENT")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                roleFilter === "PARENT" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${roleFilter === "PARENT" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
+                }`}
             >
               Parent
             </button>
             <button
               onClick={() => setRoleFilter("ADMIN")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                roleFilter === "ADMIN" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${roleFilter === "ADMIN" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
+                }`}
             >
               Admin
             </button>
@@ -131,11 +127,10 @@ export default function UserManagementTable({
                   </td>
                   <td className="py-4 px-6 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center gap-1 font-bold px-2.5 py-1 rounded-full text-[10px] whitespace-nowrap ${
-                        user.role === "ADMIN"
+                      className={`inline-flex items-center gap-1 font-bold px-2.5 py-1 rounded-full text-[10px] whitespace-nowrap ${user.role === "ADMIN"
                           ? "bg-purple-50 text-purple-700 border border-purple-200"
                           : "bg-blue-50 text-blue-700 border border-blue-200"
-                      }`}
+                        }`}
                     >
                       {user.role}
                     </span>
@@ -146,11 +141,10 @@ export default function UserManagementTable({
                   <td className="py-4 px-6 text-slate-500 whitespace-nowrap">{user.joinedDate}</td>
                   <td className="py-4 px-6 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center font-semibold px-2.5 py-0.5 rounded-full text-[10px] whitespace-nowrap ${
-                        user.status === "ACTIVE"
+                      className={`inline-flex items-center font-semibold px-2.5 py-0.5 rounded-full text-[10px] whitespace-nowrap ${user.status === "ACTIVE"
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : "bg-slate-100 text-slate-500"
-                      }`}
+                        }`}
                     >
                       {user.status === "ACTIVE" ? "Aktif" : "Non-aktif"}
                     </span>
